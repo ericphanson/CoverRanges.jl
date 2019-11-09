@@ -4,9 +4,9 @@
 [![Codecov](https://codecov.io/gh/ericphanson/CoverRanges.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/ericphanson/CoverRanges.jl)
 
 Our task is to partially covering a range of integers from a collection of
-subranges. More specifically, given a range `r` and a collection of ranges `C`,
-we aim to find the smallest subcollection of `C` that covers at least `K`
-elements of `r`.
+subranges. More specifically, given a range `r` (a `UnitRange`, i.e. integer spacing)
+and a collection of ranges `C`, we aim to find the smallest subcollection of `C`
+that covers at least `K` elements of `r`.
 
 This problem was posed by Jakob Nissen in the random channel of the Julia slack,
 and here I've implemented a dynamic programming algorithm made by Mathieu
