@@ -35,7 +35,8 @@ julia> C[solve_min_covering(r, 6, C)]
  4:6
 ```
 
-We can see that's exactly what we get. Let's make it more interesting. We'll tile two copies of `C` next to each other:
+We can see that's exactly what we get. Let's make it more interesting. We'll
+tile two copies of `C` next to each other:
 
 ```julia
 julia> append!(C, [r .+ 6 for r in C])
@@ -64,7 +65,8 @@ julia> C[solve_min_covering(r, 8, C)]
  8:11
 ```
 
-But for `K = 10`, we'll take the two length-3 ranges to cover the first six, then the length 4 range to complete the partial cover:
+But for `K = 10`, we'll take the two length-3 ranges to cover the first six,
+then the length 4 range to complete the partial cover:
 
 ```julia
 julia> C[solve_min_covering(r, 10, C)]
@@ -85,7 +87,12 @@ julia> C[solve_min_covering(r, 11, C)]
  10:12
 ```
 
-This package also provides an `AccessDict` object, which is a dictionary that keeps track of when its elements are retrieved or set. Note that only enough methods are implemented for it to be used as a memoization cache in this package; for other uses, more methods would likely be needed (e.g. `getindex` and `setindex!`). This can help provide more detailed information about how the algorithm works.
+This package also provides an `AccessDict` object, which is a dictionary that
+keeps track of when its elements are retrieved or set. Note that only enough
+methods are implemented for it to be used as a memoization cache in this
+package; for other uses, more methods would likely be needed (e.g. `getindex`
+and `setindex!`). This can help provide more detailed information about how the
+algorithm works.
 
 ```julia
 julia> using CoverRanges: LeftToCover, PartialCover
