@@ -10,27 +10,33 @@ export AccessDict, total_gets, total_sets #src
 # cover it is the one which extends the furthest to the right (out of all the
 # ranges which include the element). Then it remains to solve a smaller instance
 # of the problem. Likewise, if we don't include the element, we again are left
-# with a smaller instance of the problem. In other words, We aim to solve the
-# dynamic programming equation `min_number_to_cover(a:b, K) = min(1 +
-# min_number_to_cover(f:b, K - (f-a+1)), min_number_to_cover( (a+1):b, K))` where
+# with a smaller instance of the problem. In other words, we aim to solve the
+# dynamic programming equation
+#
+# ```julia
+# min_number_to_cover(a:b, K) = min(1 + min_number_to_cover(f:b, K - (f-a+1)), min_number_to_cover((a+1):b, K))
+# ```
+#
+# where
 # `min_number_to_cover(r, K)` is the minimum number of ranges needed to cover at
 # least `K` elements of `r` and `f` is the endpoint furthest to the right of any
 # range in `C` that includes `a`.
-
-# We proceed starting from the left-most node (i.e. an element in the range). Let
-# us say we reach node `a`. We can either
-
+#
+# Why is this the right recursive equation for this problem? Let us say we reach
+# node `a`. We can either
+#
 # * include node `a` in our set of nodes covered, in which case we choose the
 #   range that includes `a` and stretches as far as possible to the right; in that
 #   case, we have to solve the problem on the remaining set of nodes (this
 #   corresponds to `min_number_to_cover(f:b, K - (f-a+1))`).
 # * Otherwise, we skip node `a` and need to solve the problem with the remaining
 # nodes `a+1:b`,
-#   still needing to cover `K` nodes, which corresponds to `min_number_to_cover(
-#   (a+1):b, K))`.
+#   still needing to cover `K` nodes (this corresponds to `min_number_to_cover(
+#   (a+1):b, K))`).
+#
 
-
-# We need an object to represent an impossible task, which is never chosen in a
+# Let's begin the implementation.
+# First, we need an object to represent an impossible task, which is never chosen in a
 # minimum and which is invariant under adding `+1`. Julia's `Inf` does this for
 # us, but `Inf` is a floating point number, and we'd prefer to stick to integers
 # (with the exception of this infinity).
@@ -68,7 +74,7 @@ struct PartialCover{T}
 end
 
 
-# To find the range with the furthest right endpoint
+# Next, to find the range with the furthest right endpoint
 # including a given node, we just write a simple loop.
 """
     find_furthest_range(a, C) -> index, right_endpoint
@@ -91,7 +97,11 @@ function find_furthest_range(a, C)
 end
 
 # Now comes the heart of the algorithm. We compute
-# `min_number_to_cover(a:b, K) = min(1 + min_number_to_cover(f:b, K - (f-a+1)), min_number_to_cover( (a+1):b, K))`
+# 
+# ```julia
+# min_number_to_cover(a:b, K) = min(1 + min_number_to_cover(f:b, K - (f-a+1)), min_number_to_cover((a+1):b, K))
+# ```
+#
 # recursively with the help of a memoization cache, which maps from
 # (sub)instances of the problem to solutions.
 function min_covering(key::LeftToCover{T}, furthest_ranges, cache::AbstractDict{LeftToCover{T}, PartialCover{T}}) where {T}
@@ -124,13 +134,13 @@ end
 # `a` in the partial cover, we make a new `PartialCover` object instead of
 # returning `add_cover`. That's because if we include `a` by using the range that
 # ends at `f_a`, we really are adding a range to the partial cover represented by
-# `add_cover`, so we make a new `PartialCover` object, whose value of `m` is one
+# `add_cover`, so we make a new `PartialCover` object, one whose value of `m` is one
 # larger (corresponding to the extra range we added), which holds the index `i_a`
 # of the range that we added, and which holds `add_key`, which we can use to
 # recover `add_cover` from `cache` later. In all, this lets us hold the sequence
-# of ranges used in the final optimal cover efficiently, as a linked list.
+# of ranges used in the final optimal cover efficiently (as a linked list).
 
-# Now we wrap `min_covering` in a helper function that constructs `furthest_ranges`,
+# Lastly, we wrap `min_covering` in a helper function that constructs `furthest_ranges`,
 # the memoization cache, and unwinds the linked list that holds the solution in order
 # to recover the indices of the ranges included in the minimal partial cover we have found.
 """
