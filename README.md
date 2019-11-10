@@ -13,6 +13,10 @@ and here I've implemented a dynamic programming algorithm made by Mathieu
 Tanneau, which is partly based on the solution to the case when `K = length(r)` given
 here: <https://stackoverflow.com/a/294419>.
 
+The file `src/CoverRanges.jl` was written as a [Literate.jl](https://github.com/fredrikekre/Literate.jl)
+file, and is rendered in Markdown as the last part of my blog post
+[*Learning algorithmic techniques: dynamic programming*](https://ericphanson.com/blog/2019/learning-algorithmic-techniques-dynamic-programming/).
+
 ## Example
 
 Let's consider `r = 1:6`, `C = [1:1, 2:5, 6:6, 1:3, 4:6]` and `K = 6`. This is
